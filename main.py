@@ -3,9 +3,11 @@ import sys
 import pygame
 
 FPS = 60
+CELL_SIZE = 40
+CELL_NUMBER = 20
 
 pygame.init()
-screen = pygame.display.set_mode((400, 500))
+screen = pygame.display.set_mode((CELL_NUMBER * CELL_SIZE, CELL_NUMBER * CELL_SIZE))
 clock = pygame.time.Clock()
 
 while True:
