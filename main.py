@@ -132,7 +132,23 @@ class SnakeGame:
         self.check_collision()
         self.check_fail()
 
+    def draw_grass(self):
+        grass_colour = (165, 210, 60)
+
+        for row in range(CELL_NUMBER):
+            if row % 2 == 0:
+                for col in range(CELL_NUMBER):
+                    if col % 2 == 0:
+                        grass_rect = pygame.Rect(col * CELL_SIZE, row * CELL_SIZE, CELL_SIZE, CELL_SIZE)
+                        pygame.draw.rect(screen, grass_colour, grass_rect)
+            else:
+                for col in range(CELL_NUMBER):
+                    if col % 2 != 0:
+                        grass_rect = pygame.Rect(col * CELL_SIZE, row * CELL_SIZE, CELL_SIZE, CELL_SIZE)
+                        pygame.draw.rect(screen, grass_colour, grass_rect)
+
     def draw_elements(self):
+        self.draw_grass()
         self.snake.draw_snake()
         self.fruit.draw_fruit()
 
