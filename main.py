@@ -49,7 +49,7 @@ class Fruit:
             CELL_SIZE,
             CELL_SIZE,
         )
-        pygame.draw.rect(screen, pygame.Color("red"), fruit_rect)
+        screen.blit(apple, fruit_rect)
 
     def randomise_position(self):
         self.x = random.randint(0, CELL_NUMBER - 1)
@@ -106,6 +106,8 @@ screen = pygame.display.set_mode((CELL_NUMBER * CELL_SIZE, CELL_NUMBER * CELL_SI
 clock = pygame.time.Clock()
 SCREEN_UPDATE = pygame.USEREVENT
 pygame.time.set_timer(SCREEN_UPDATE, 150)
+
+apple = pygame.image.load("textures/apple.png").convert_alpha()
 
 snake_game = SnakeGame()
 
