@@ -7,7 +7,7 @@ from pygame.math import Vector2
 
 class Snake:
     def __init__(self):
-        self.body = [Vector2(5, 10), Vector2(6, 10), Vector2(7, 10)]
+        self.body = [Vector2(5, 10), Vector2(4, 10), Vector2(3, 10)]
         self.direction = RIGHT
         self.can_grow = False
 
@@ -65,6 +65,7 @@ class SnakeGame:
     def update(self):
         self.snake.move_snake()
         self.check_collision()
+        self.check_fail()
 
     def draw_elements(self):
         self.snake.draw_snake()
@@ -74,6 +75,21 @@ class SnakeGame:
         if self.fruit.position == self.snake.body[0]:
             self.fruit.randomise_position()
             self.snake.grow()
+
+    def check_fail(self):
+        if (
+            not 0 <= self.snake.body[0].x < CELL_NUMBER
+            or not 0 <= self.snake.body[0].y < CELL_NUMBER
+        ):
+            self.game_over()
+
+        for block in self.snake.body[1:]:
+            if block == self.snake.body[0]:
+                self.game_over()
+
+    def game_over(self):
+        pygame.quit()
+        sys.exit()
 
 
 FPS = 60
@@ -101,13 +117,13 @@ while True:
         if event.type == SCREEN_UPDATE:
             snake_game.update()
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_UP:
+            if event.key == pygame.K_UP and snake_game.snake.direction != DOWN:
                 snake_game.snake.direction = UP
-            if event.key == pygame.K_DOWN:
+            if event.key == pygame.K_DOWN and snake_game.snake.direction != UP:
                 snake_game.snake.direction = DOWN
-            if event.key == pygame.K_LEFT:
+            if event.key == pygame.K_LEFT and snake_game.snake.direction != RIGHT:
                 snake_game.snake.direction = LEFT
-            if event.key == pygame.K_RIGHT:
+            if event.key == pygame.K_RIGHT and snake_game.snake.direction != LEFT:
                 snake_game.snake.direction = RIGHT
 
     screen.fill((175, 215, 70))
