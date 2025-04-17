@@ -11,8 +11,29 @@ class Snake:
         self.direction = RIGHT
         self.can_grow = False
 
+        self.head_up = pygame.image.load("textures/head_up.png").convert_alpha()
+        self.head_down = pygame.image.load("textures/head_down.png").convert_alpha()
+        self.head_left = pygame.image.load("textures/head_left.png").convert_alpha()
+        self.head_right = pygame.image.load("textures/head_right.png").convert_alpha()
+
+        self.tail_up = pygame.image.load("textures/tail_up.png").convert_alpha()
+        self.tail_down = pygame.image.load("textures/tail_down.png").convert_alpha()
+        self.tail_left = pygame.image.load("textures/tail_left.png").convert_alpha()
+        self.tail_right = pygame.image.load("textures/tail_right.png").convert_alpha()
+
+        self.body_vertical = pygame.image.load("textures/body_vertical.png").convert_alpha()
+        self.body_horizontal = pygame.image.load("textures/body_horizontal.png").convert_alpha()
+
+        self.body_top_left = pygame.image.load("textures/body_top_left.png").convert_alpha()
+        self.body_top_right = pygame.image.load("textures/body_top_right.png").convert_alpha()
+        self.body_bottom_left = pygame.image.load("textures/body_bottom_left.png").convert_alpha()
+        self.body_bottom_right = pygame.image.load("textures/body_bottom_right.png").convert_alpha()
+
     def draw_snake(self):
-        for block in self.body:
+        self.update_head_texture()
+        self.update_tail_texture()
+
+        for index, block in enumerate(self.body):
             x_position = int(block.x * CELL_SIZE)
             y_position = int(block.y * CELL_SIZE)
             block_rect = pygame.Rect(
@@ -21,7 +42,50 @@ class Snake:
                 CELL_SIZE,
                 CELL_SIZE,
             )
-            pygame.draw.rect(screen, pygame.Color("blue"), block_rect)
+            if index == 0:
+                screen.blit(self.head, block_rect)
+            elif index == len(self.body) - 1:
+                screen.blit(self.tail, block_rect)
+            else:
+                previous_block = self.body[index + 1] - block
+                next_block = self.body[index - 1] - block
+
+                if previous_block.x == next_block.x:
+                    screen.blit(self.body_vertical, block_rect)
+                elif previous_block.y == next_block.y:
+                    screen.blit(self.body_horizontal, block_rect)
+                else:
+                    if previous_block.x == -1 and next_block.y == -1 or previous_block.y == -1 and next_block.x == -1:
+                        screen.blit(self.body_top_left, block_rect)
+                    elif previous_block.x == 1 and next_block.y == -1 or previous_block.y == -1 and next_block.x == 1:
+                        screen.blit(self.body_top_right, block_rect)
+                    elif previous_block.x == -1 and next_block.y == 1 or previous_block.y == 1 and next_block.x == -1:
+                        screen.blit(self.body_bottom_left, block_rect)
+                    elif previous_block.x == 1 and next_block.y == 1 or previous_block.y == 1 and next_block.x == 1:
+                        screen.blit(self.body_bottom_right, block_rect)
+
+    def update_head_texture(self):
+        head_direction = self.body[1] - self.body[0]
+
+        if head_direction == UP:
+            self.head = self.head_down
+        elif head_direction == DOWN:
+            self.head = self.head_up
+        elif head_direction == LEFT:
+            self.head = self.head_right
+        elif head_direction == RIGHT:
+            self.head = self.head_left
+
+    def update_tail_texture(self):
+        tail_direction = self.body[-2] - self.body[-1]
+        if tail_direction == UP:
+            self.tail = self.tail_down
+        elif tail_direction == DOWN:
+            self.tail = self.tail_up
+        elif tail_direction == LEFT:
+            self.tail = self.tail_right
+        elif tail_direction == RIGHT:
+            self.tail = self.tail_left
 
     def move_snake(self):
         if self.can_grow is True:
@@ -78,10 +142,7 @@ class SnakeGame:
             self.snake.grow()
 
     def check_fail(self):
-        if (
-            not 0 <= self.snake.body[0].x < CELL_NUMBER
-            or not 0 <= self.snake.body[0].y < CELL_NUMBER
-        ):
+        if not 0 <= self.snake.body[0].x < CELL_NUMBER or not 0 <= self.snake.body[0].y < CELL_NUMBER:
             self.game_over()
 
         for block in self.snake.body[1:]:
