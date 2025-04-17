@@ -29,6 +29,8 @@ class Snake:
         self.body_bottom_left = pygame.image.load("textures/body_bottom_left.png").convert_alpha()
         self.body_bottom_right = pygame.image.load("textures/body_bottom_right.png").convert_alpha()
 
+        self.crunch_sound = pygame.mixer.Sound("sounds/crunch.wav")
+
     def draw_snake(self):
         self.update_head_texture()
         self.update_tail_texture()
@@ -86,6 +88,9 @@ class Snake:
             self.tail = self.tail_right
         elif tail_direction == RIGHT:
             self.tail = self.tail_left
+
+    def play_crunch_sound(self):
+        self.crunch_sound.play()
 
     def move_snake(self):
         if self.can_grow is True:
@@ -180,6 +185,7 @@ class SnakeGame:
         if self.fruit.position == self.snake.body[0]:
             self.fruit.randomise_position()
             self.snake.grow()
+            self.snake.play_crunch_sound()
 
     def check_fail(self):
         if not 0 <= self.snake.body[0].x < CELL_NUMBER or not 0 <= self.snake.body[0].y < CELL_NUMBER:
@@ -203,6 +209,7 @@ DOWN = Vector2(0, 1)
 LEFT = Vector2(-1, 0)
 RIGHT = Vector2(1, 0)
 
+pygame.mixer.pre_init(44100, -16, 2, 512)
 pygame.init()
 screen = pygame.display.set_mode((CELL_NUMBER * CELL_SIZE, CELL_NUMBER * CELL_SIZE))
 clock = pygame.time.Clock()
