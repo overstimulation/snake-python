@@ -8,7 +8,7 @@ from pygame.math import Vector2
 class Snake:
     def __init__(self):
         self.body = [Vector2(5, 10), Vector2(4, 10), Vector2(3, 10)]
-        self.direction = RIGHT
+        self.direction = NO_MOVE
         self.can_grow = False
 
         self.head_up = pygame.image.load("textures/head_up.png").convert_alpha()
@@ -106,6 +106,10 @@ class Snake:
     def grow(self):
         self.can_grow = True
 
+    def reset(self):
+        self.body = [Vector2(5, 10), Vector2(4, 10), Vector2(3, 10)]
+        self.direction = NO_MOVE
+
 
 class Fruit:
     def __init__(self):
@@ -187,6 +191,10 @@ class SnakeGame:
             self.snake.grow()
             self.snake.play_crunch_sound()
 
+        for block in self.snake.body[1:]:
+            if block == self.fruit.position:
+                self.fruit.randomise_position()
+
     def check_fail(self):
         if not 0 <= self.snake.body[0].x < CELL_NUMBER or not 0 <= self.snake.body[0].y < CELL_NUMBER:
             self.game_over()
@@ -196,14 +204,14 @@ class SnakeGame:
                 self.game_over()
 
     def game_over(self):
-        pygame.quit()
-        sys.exit()
+        self.snake.reset()
 
 
 FPS = 60
 CELL_SIZE = 40
 CELL_NUMBER = 20
 
+NO_MOVE = Vector2(0, 0)
 UP = Vector2(0, -1)
 DOWN = Vector2(0, 1)
 LEFT = Vector2(-1, 0)
