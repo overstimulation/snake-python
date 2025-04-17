@@ -126,6 +126,7 @@ class SnakeGame:
     def __init__(self):
         self.snake = Snake()
         self.fruit = Fruit()
+        self.game_font = pygame.font.Font(None, 25)
 
     def update(self):
         self.snake.move_snake()
@@ -147,8 +148,31 @@ class SnakeGame:
                         grass_rect = pygame.Rect(col * CELL_SIZE, row * CELL_SIZE, CELL_SIZE, CELL_SIZE)
                         pygame.draw.rect(screen, grass_colour, grass_rect)
 
+    def draw_score(self):
+        score_text = str(len(self.snake.body) - 3)
+        score_surface = self.game_font.render(score_text, True, (55, 75, 10))
+        score_x_position = int(CELL_SIZE * CELL_NUMBER - 60)
+        score_y_position = int(CELL_SIZE * CELL_NUMBER - 40)
+        score_rect = score_surface.get_rect(center=(score_x_position, score_y_position))
+
+        score_image = pygame.image.load("textures/apple.png").convert_alpha()
+        score_image_rect = score_image.get_rect(midright=(score_rect.left, score_rect.centery))
+
+        score_background_rect = pygame.Rect(
+            score_image_rect.left,
+            score_image_rect.top,
+            score_rect.width + score_image_rect.width + 10,
+            score_image_rect.height,
+        )
+
+        pygame.draw.rect(screen, (165, 210, 60), score_background_rect)
+        pygame.draw.rect(screen, (55, 75, 10), score_background_rect, 2)
+        screen.blit(score_surface, score_rect)
+        screen.blit(score_image, score_image_rect)
+
     def draw_elements(self):
         self.draw_grass()
+        self.draw_score()
         self.snake.draw_snake()
         self.fruit.draw_fruit()
 
